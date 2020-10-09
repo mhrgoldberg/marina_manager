@@ -1,21 +1,15 @@
 class Api::V1::SpotsController < ApplicationController
+
+  # /api/v1/spots  -  GET
   def index
     @spots = Spot.all
-    render json: @spots
-  end
-
-  def show
-    @spot = Spot.find(params[:id])
-		render json: @spot
-	end
-
-	def update
-    @spot = Spot.find(params[:id])
-    if @spot.update(spot_params)
-      render :show
-    else
-      render json: @spot.errors.full_messages, status: 422
-    end
+    @boats = Boat.all
+    # send both spots and boats to frontend
+    # ideally would have used jbuilder to shape data from API
+    render json: {
+      spots: Spot.convert_data_to_object(@spots), 
+      boats: Boat.convert_data_to_object(@boats)
+    }
   end
 	
 
